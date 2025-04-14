@@ -1,0 +1,19 @@
+SELECT 
+    d.doctor_id,
+    d.first_name,
+    d.last_name,
+    COUNT(DISTINCT t.telehealth_id) AS telehealth_sessions,
+    AVG(f.number_stars) AS average_rating
+FROM 
+    DOCTOR d
+JOIN 
+    TELEHEALTH_SESSION t ON d.doctor_id = t.doctor_id
+LEFT JOIN 
+    FEEDBACK f ON t.telehealth_id = f.telehealth_id
+WHERE 
+    t.start_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+GROUP BY 
+    d.doctor_id, d.first_name, d.last_name
+HAVING 
+    COUNT(DISTINCT t.telehealth_id) > 10
+    AND AVG(f.number_stars) < 4;
