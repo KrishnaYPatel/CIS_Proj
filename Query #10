@@ -1,0 +1,18 @@
+SELECT 
+    lt.technician_id,
+    lt.first_name,
+    lt.last_name,
+    COUNT(*) AS specialized_test_count
+FROM 
+    LAB l
+JOIN 
+    TEST t ON l.test_id = t.test_id
+JOIN 
+    LAB_TECHNICIAN lt ON l.technician_id = lt.technician_id
+WHERE 
+    t.is_specialized = TRUE
+    AND l.lab_test_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+GROUP BY 
+    lt.technician_id, lt.first_name, lt.last_name
+HAVING 
+    COUNT(*) > 10;
